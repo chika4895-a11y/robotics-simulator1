@@ -1,0 +1,1159 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robotics Learning Dashboard</title>
+
+<style>
+:root {
+    --primary: #2563eb;
+    --dark: #14213d;
+    --background: #f3f6fc;
+    --white: #ffffff;
+    --green: #16a34a;
+    --muted: #64748b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--background);
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+header {
+    background: linear-gradient(120deg, #14213d, #2563eb);
+    color: white;
+    padding: 30px 6%;
+}
+
+header h1 {
+    font-size: clamp(25px, 4vw, 36px);
+}
+
+header p {
+    margin-top: 8px;
+    color: #dbeafe;
+}
+
+.container {
+    width: 90%;
+    max-width: 1250px;
+    margin: 28px auto;
+}
+
+.section-title {
+    font-size: 22px;
+    margin-bottom: 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 13px;
+    box-shadow: 0 3px 14px rgba(0,0,0,.06);
+}
+
+.stat {
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.muted {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.progress-track {
+    background: #e2e8f0;
+    height: 12px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+.progress-fill {
+    background: var(--green);
+    height: 100%;
+    width: 0%;
+    transition: width .3s;
+}
+
+.topic-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 12px;
+}
+
+.topic {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.topic input {
+    width: 19px;
+    height: 19px;
+    accent-color: var(--green);
+    cursor: pointer;
+}
+
+.topic label {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button, select {
+    border: none;
+    border-radius: 7px;
+    padding: 11px 17px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+button:focus-visible, select:focus-visible, input:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 2px;
+}
+
+.primary-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.secondary-btn {
+    background: #e2e8f0;
+    color: var(--dark);
+}
+
+.green-btn {
+    background: var(--green);
+    color: white;
+}
+
+button:hover {
+    opacity: .88;
+}
+
+.timer {
+    text-align: center;
+    padding: 28px;
+}
+
+.timer-display {
+    font-size: clamp(42px, 7vw, 60px);
+    font-weight: bold;
+    color: var(--primary);
+    margin: 10px 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.timer select {
+    border: 1px solid #cbd5e1;
+    background: white;
+}
+
+.flip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 17px;
+}
+
+.flip-card {
+    height: 190px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.flip-inner {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    transition: transform .6s;
+    transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-front, .flip-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.flip-front {
+    background: linear-gradient(135deg, #dbeafe, #eff6ff);
+    color: #1e40af;
+}
+
+.flip-back {
+    background: #14213d;
+    color: white;
+    transform: rotateY(180deg);
+    font-size: 14px;
+}
+
+.flip-front h3 {
+    margin: 10px 0;
+}
+
+.flip-front span {
+    font-size: 30px;
+}
+
+.quiz-question {
+    padding: 18px;
+    margin-bottom: 15px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+.quiz-question h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.option {
+    display: block;
+    padding: 9px;
+    margin: 5px 0;
+    background: #f8fafc;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.option:hover {
+    background: #eaf1ff;
+}
+
+.option input {
+    margin-right: 9px;
+    accent-color: var(--primary);
+}
+
+.result {
+    display: none;
+    padding: 20px;
+    margin-top: 15px;
+    background: #dcfce7;
+    border-radius: 10px;
+    color: #14532d;
+}
+
+.chart-wrap {
+    height: 250px;
+    width: 100%;
+    position: relative;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    background: var(--dark);
+    color: white;
+    margin-top: 40px;
+}
+
+@media(max-width:600px) {
+    header {
+        padding: 24px 5%;
+    }
+
+    .container {
+        width: 94%;
+    }
+
+    .card {
+        padding: 17px;
+    }
+
+    .timer-controls button {
+        flex: 1;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🤖 Robotics Learning Dashboard</h1>
+    <p>Interactive Learning Platform for Postgraduate Students</p>
+    <p>Learn • Explore • Practice • Evaluate</p>
+</header>
+
+<main class="container">
+
+<!-- OVERVIEW -->
+<h2 class="section-title">Learning Overview</h2>
+
+<div class="grid">
+    <div class="card">
+        <p class="muted">Total Topics</p>
+        <div class="stat">7</div>
+        <p>Robotics learning modules</p>
+    </div>
+
+    <div class="card">
+        <p class="muted">Completed Topics</p>
+        <div class="stat" id="completedCount">0 / 7</div>
+        <p>Topics completed</p>
+    </div>
+
+    <div class="card">
+        <p class="muted">Learning Progress</p>
+        <div class="stat" id="progressText">0%</div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+    </div>
+
+    <div class="card">
+        <p class="muted">Quiz Score</p>
+        <div class="stat" id="overviewScore">--</div>
+        <p>Latest quiz performance</p>
+    </div>
+</div>
+
+<!-- TOPIC CHECKLIST -->
+<h2 class="section-title">📚 Robotics Learning Topics</h2>
+
+<div class="card">
+    <p class="muted" style="margin-bottom:15px">
+        Tick each topic after completing the learning activity.
+    </p>
+
+    <div class="topic-list" id="topicList">
+
+        <div class="topic">
+            <input type="checkbox" id="topic0" class="topic-check">
+            <label for="topic0">Introduction to Robotics</label>
+        </div>
+
+        <div class="topic">
+            <input type="checkbox" id="topic1" class="topic-check">
+            <label for="topic1">Sensors</label>
+        </div>
+
+        <div class="topic">
+            <input type="checkbox" id="topic2" class="topic-check">
+            <label for="topic2">Actuators</label>
+        </div>
+
+        <div class="topic">
+            <input type="checkbox" id="topic3" class="topic-check">
+            <label for="topic3">Microcontrollers</label>
+        </div>
+
+        <div class="topic">
+            <input type="checkbox" id="topic4" class="topic-check">
+            <label for="topic4">Robot Kinematics</label>
+        </div>
+
+        <div class="topic">
+            <input type="checkbox" id="topic5" class="topic-check">
+            <label for="topic5">Robot Dynamics</label>
+        </div>
+
+        <div class="topic">
+            <input type="checkbox" id="topic6" class="topic-check">
+            <label for="topic6">Motion Planning</label>
+        </div>
+
+    </div>
+
+    <div style="margin-top:20px">
+        <button class="secondary-btn" onclick="resetTopics()">
+            Reset Checklist
+        </button>
+    </div>
+</div>
+
+<!-- TIMER -->
+<h2 class="section-title" style="margin-top:30px">
+    ⏱ Study Countdown Timer
+</h2>
+
+<div class="card timer">
+
+    <p class="muted">Choose your study duration</p>
+
+    <select id="duration">
+        <option value="15">15 Minutes</option>
+        <option value="25" selected>25 Minutes</option>
+        <option value="30">30 Minutes</option>
+        <option value="45">45 Minutes</option>
+        <option value="60">60 Minutes</option>
+    </select>
+
+    <div class="timer-display" id="timerDisplay">
+        25:00
+    </div>
+
+    <p id="timerStatus" class="muted">Ready to start studying</p>
+
+    <div class="timer-controls" style="margin-top:15px">
+        <button class="green-btn" onclick="startTimer()">▶ Start</button>
+        <button class="secondary-btn" onclick="pauseTimer()">⏸ Pause</button>
+        <button class="primary-btn" onclick="resetTimer()">↻ Reset</button>
+    </div>
+</div>
+
+<!-- FLASH CARDS -->
+<h2 class="section-title" style="margin-top:30px">
+    🧠 Interactive Robotics Flashcards
+</h2>
+
+<p class="muted" style="margin-bottom:15px">
+    Click a card to reveal the explanation. Click again to return.
+</p>
+
+<div class="flip-grid">
+
+    <div class="flip-card" tabindex="0" role="button" aria-label="Flip Introduction to Robotics card">
+        <div class="flip-inner">
+            <div class="flip-front">
+                <span>🤖</span>
+                <h3>Introduction to Robotics</h3>
+                <p>Click to learn</p>
+            </div>
+            <div class="flip-back">
+                <h3>Robotics</h3>
+                <p>Robotics is the interdisciplinary field involving the design, construction, programming and operation of robots.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card" tabindex="0" role="button" aria-label="Flip Sensors card">
+        <div class="flip-inner">
+            <div class="flip-front">
+                <span>📡</span>
+                <h3>Sensors</h3>
+                <p>Click to learn</p>
+            </div>
+            <div class="flip-back">
+                <h3>Sensors</h3>
+                <p>Sensors collect information about the robot's environment. Examples include ultrasonic, infrared and proximity sensors.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card" tabindex="0" role="button" aria-label="Flip Actuators card">
+        <div class="flip-inner">
+            <div class="flip-front">
+                <span>⚙️</span>
+                <h3>Actuators</h3>
+                <p>Click to learn</p>
+            </div>
+            <div class="flip-back">
+                <h3>Actuators</h3>
+                <p>Actuators convert electrical or other forms of energy into mechanical movement. Examples include DC motors and servo motors.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card" tabindex="0" role="button" aria-label="Flip Microcontrollers card">
+        <div class="flip-inner">
+            <div class="flip-front">
+                <span>💻</span>
+                <h3>Microcontrollers</h3>
+                <p>Click to learn</p>
+            </div>
+            <div class="flip-back">
+                <h3>Microcontrollers</h3>
+                <p>A microcontroller is a compact integrated circuit containing a processor, memory and input/output peripherals.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card" tabindex="0" role="button" aria-label="Flip Robot Kinematics card">
+        <div class="flip-inner">
+            <div class="flip-front">
+                <span>📐</span>
+                <h3>Robot Kinematics</h3>
+                <p>Click to learn</p>
+            </div>
+            <div class="flip-back">
+                <h3>Kinematics</h3>
+                <p>Robot kinematics studies the position, velocity and motion of robot links without considering the forces causing the motion.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card" tabindex="0" role="button" aria-label="Flip Robot Dynamics card">
+        <div class="flip-inner">
+            <div class="flip-front">
+                <span>🔩</span>
+                <h3>Robot Dynamics</h3>
+                <p>Click to learn</p>
+            </div>
+            <div class="flip-back">
+                <h3>Dynamics</h3>
+                <p>Robot dynamics studies the relationship between forces, torques and the resulting robot motion.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flip-card" tabindex="0" role="button" aria-label="Flip Motion Planning card">
+        <div class="flip-inner">
+            <div class="flip-front">
+                <span>🗺️</span>
+                <h3>Motion Planning</h3>
+                <p>Click to learn</p>
+            </div>
+            <div class="flip-back">
+                <h3>Motion Planning</h3>
+                <p>Motion planning determines a feasible and collision-free path for a robot to move from its initial position to a target position.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- QUIZ -->
+<h2 class="section-title" style="margin-top:35px">
+    📝 Robotics Knowledge Assessment
+</h2>
+
+<div class="card">
+
+    <p class="muted" style="margin-bottom:20px">
+        Answer all 10 questions and click Submit Quiz to calculate your score.
+    </p>
+
+    <form id="quizForm">
+
+        <div id="questions"></div>
+
+        <button type="submit" class="primary-btn">
+            Submit Quiz
+        </button>
+
+        <button type="button" class="secondary-btn"
+                onclick="resetQuiz()">
+            Reset Quiz
+        </button>
+
+    </form>
+
+    <div class="result" id="quizResult" aria-live="polite">
+        <h2 id="resultTitle">Your Result</h2>
+        <p id="resultScore"></p>
+        <p id="resultMessage"></p>
+    </div>
+
+</div>
+
+<!-- CHART -->
+<h2 class="section-title" style="margin-top:35px">
+    📊 Student Learning Progress
+</h2>
+
+<div class="card">
+    <p class="muted" style="margin-bottom:15px">
+        Topic completion status (updates automatically).
+    </p>
+
+    <div class="chart-wrap">
+        <canvas id="progressChart" role="img"
+                aria-label="Bar chart showing completed and pending robotics topics">
+            Robotics topic progress chart.
+        </canvas>
+    </div>
+</div>
+
+</main>
+
+<footer>
+    <p>Robotics Learning Dashboard</p>
+    <p class="muted" style="color:#cbd5e1">
+        Postgraduate Education | Learn • Explore • Evaluate
+    </p>
+</footer>
+
+<script>
+
+// ========================================
+// 1. TOPIC CHECKLIST AND PROGRESS
+// ========================================
+
+const topicNames = [
+    "Introduction",
+    "Sensors",
+    "Actuators",
+    "Microcontrollers",
+    "Kinematics",
+    "Dynamics",
+    "Motion Planning"
+];
+
+const topicChecks = document.querySelectorAll(".topic-check");
+
+function updateProgress() {
+
+    const completed = [...topicChecks].filter(
+        checkbox => checkbox.checked
+    ).length;
+
+    const percentage = Math.round(
+        (completed / topicChecks.length) * 100
+    );
+
+    document.getElementById("completedCount").textContent =
+        completed + " / 7";
+
+    document.getElementById("progressText").textContent =
+        percentage + "%";
+
+    document.getElementById("progressBar").style.width =
+        percentage + "%";
+
+    topicChecks.forEach((checkbox, index) => {
+        const label = document.querySelector(
+            'label[for="topic' + index + '"]'
+        );
+
+        label.style.textDecoration = checkbox.checked
+            ? "line-through" : "none";
+
+        label.style.color = checkbox.checked
+            ? "#16a34a" : "#14213d";
+    });
+
+    drawChart();
+}
+
+topicChecks.forEach(checkbox => {
+    checkbox.addEventListener("change", updateProgress);
+});
+
+function resetTopics() {
+    topicChecks.forEach(checkbox => checkbox.checked = false);
+    updateProgress();
+}
+
+// ========================================
+// 2. COUNTDOWN TIMER
+// ========================================
+
+let remainingSeconds = 25 * 60;
+let timerInterval = null;
+
+const timerDisplay = document.getElementById("timerDisplay");
+const timerStatus = document.getElementById("timerStatus");
+const durationSelect = document.getElementById("duration");
+
+function displayTimer() {
+
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+
+    timerDisplay.textContent =
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0");
+}
+
+durationSelect.addEventListener("change", function() {
+
+    clearInterval(timerInterval);
+    timerInterval = null;
+
+    remainingSeconds = Number(this.value) * 60;
+
+    displayTimer();
+    timerStatus.textContent = "Ready to start studying";
+});
+
+function startTimer() {
+
+    if (timerInterval !== null) return;
+
+    if (remainingSeconds <= 0) {
+        timerStatus.textContent =
+            "Timer finished. Reset to start again.";
+        return;
+    }
+
+    timerStatus.textContent = "Study session in progress...";
+
+    timerInterval = setInterval(function() {
+
+        remainingSeconds--;
+        displayTimer();
+
+        if (remainingSeconds <= 0) {
+
+            clearInterval(timerInterval);
+            timerInterval = null;
+
+            timerStatus.textContent =
+                "🎉 Study session completed!";
+
+            alert("Congratulations! Your study session is complete.");
+        }
+
+    }, 1000);
+}
+
+function pauseTimer() {
+
+    if (timerInterval !== null) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerStatus.textContent = "Study session paused";
+    }
+}
+
+function resetTimer() {
+
+    clearInterval(timerInterval);
+    timerInterval = null;
+
+    remainingSeconds = Number(durationSelect.value) * 60;
+
+    displayTimer();
+    timerStatus.textContent = "Timer reset. Ready to study.";
+}
+
+displayTimer();
+
+// ========================================
+// 3. INTERACTIVE FLIP CARDS
+// ========================================
+
+document.querySelectorAll(".flip-card").forEach(card => {
+
+    function flip() {
+        card.classList.toggle("flipped");
+    }
+
+    card.addEventListener("click", flip);
+
+    card.addEventListener("keydown", function(event) {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            flip();
+        }
+    });
+
+});
+
+// ========================================
+// 4. QUIZ QUESTIONS
+// ========================================
+
+const quizData = [
+
+{
+    question: "What is the main purpose of robotics?",
+    options: [
+        "To design and operate intelligent machines",
+        "To create computer games only",
+        "To store data",
+        "To design websites"
+    ],
+    answer: 0
+},
+
+{
+    question: "Which device is used to measure distance?",
+    options: [
+        "DC motor",
+        "Ultrasonic sensor",
+        "Relay",
+        "Battery"
+    ],
+    answer: 1
+},
+
+{
+    question: "Which component converts electrical energy into mechanical motion?",
+    options: [
+        "Sensor",
+        "Microcontroller",
+        "Actuator",
+        "Resistor"
+    ],
+    answer: 2
+},
+
+{
+    question: "Which of the following is a microcontroller?",
+    options: [
+        "Arduino Uno",
+        "Ultrasonic sensor",
+        "Servo motor",
+        "Gear"
+    ],
+    answer: 0
+},
+
+{
+    question: "Robot kinematics deals with:",
+    options: [
+        "Forces only",
+        "Position and motion",
+        "Temperature",
+        "Electrical resistance"
+    ],
+    answer: 1
+},
+
+{
+    question: "Robot dynamics considers:",
+    options: [
+        "Forces and torques",
+        "Colour detection",
+        "Image resolution",
+        "Memory capacity only"
+    ],
+    answer: 0
+},
+
+{
+    question: "What is the purpose of motion planning?",
+    options: [
+        "To increase battery size",
+        "To create a feasible path for a robot",
+        "To store images",
+        "To measure temperature"
+    ],
+    answer: 1
+},
+
+{
+    question: "Which actuator is commonly used for precise angular positioning?",
+    options: [
+        "Servo motor",
+        "Ultrasonic sensor",
+        "Temperature sensor",
+        "Microphone"
+    ],
+    answer: 0
+},
+
+{
+    question: "What is forward kinematics?",
+    options: [
+        "Finding joint positions from forces",
+        "Finding end-effector position from joint variables",
+        "Measuring motor temperature",
+        "Calculating battery voltage"
+    ],
+    answer: 1
+},
+
+{
+    question: "Which technique helps a robot avoid obstacles?",
+    options: [
+        "Motion planning",
+        "Data storage",
+        "Image compression",
+        "Voltage regulation"
+    ],
+    answer: 0
+}
+
+];
+
+// ========================================
+// 5. DISPLAY QUIZ
+// ========================================
+
+const questionsContainer =
+    document.getElementById("questions");
+
+function loadQuiz() {
+
+    questionsContainer.innerHTML = "";
+
+    quizData.forEach((item, index) => {
+
+        const questionDiv = document.createElement("div");
+
+        questionDiv.className = "quiz-question";
+
+        const heading = document.createElement("h3");
+
+        heading.textContent =
+            (index + 1) + ". " + item.question;
+
+        questionDiv.appendChild(heading);
+
+        item.options.forEach((option, optionIndex) => {
+
+            const label = document.createElement("label");
+
+            label.className = "option";
+
+            const radio = document.createElement("input");
+
+            radio.type = "radio";
+            radio.name = "question" + index;
+            radio.value = optionIndex;
+            radio.required = true;
+
+            label.appendChild(radio);
+            label.appendChild(document.createTextNode(option));
+
+            questionDiv.appendChild(label);
+
+        });
+
+        questionsContainer.appendChild(questionDiv);
+
+    });
+
+}
+
+loadQuiz();
+
+// ========================================
+// 6. AUTOMATIC SCORE CALCULATION
+// ========================================
+
+document.getElementById("quizForm").addEventListener(
+    "submit",
+    function(event) {
+
+        event.preventDefault();
+
+        let score = 0;
+
+        quizData.forEach((item, index) => {
+
+            const selected = document.querySelector(
+                'input[name="question' + index + '"]:checked'
+            );
+
+            if (selected &&
+                Number(selected.value) === item.answer) {
+
+                score++;
+            }
+
+        });
+
+        const percentage = score * 10;
+
+        document.getElementById("quizResult").style.display =
+            "block";
+
+        document.getElementById("resultTitle").textContent =
+            "Quiz Completed!";
+
+        document.getElementById("resultScore").textContent =
+            "Your Score: " + score + " / 10 (" +
+            percentage + "%)";
+
+        let message;
+
+        if (percentage >= 90) {
+            message = "Excellent! Outstanding robotics knowledge.";
+        } else if (percentage >= 70) {
+            message = "Very good! Keep improving your knowledge.";
+        } else if (percentage >= 50) {
+            message = "Good effort! Revise the topics and try again.";
+        } else {
+            message = "Keep learning! Review the flashcards and retry.";
+        }
+
+        document.getElementById("resultMessage").textContent =
+            message;
+
+        document.getElementById("overviewScore").textContent =
+            percentage + "%";
+
+        document.getElementById("quizResult").scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
+
+    }
+);
+
+// ========================================
+// 7. RESET QUIZ
+// ========================================
+
+function resetQuiz() {
+
+    document.getElementById("quizForm").reset();
+
+    document.getElementById("quizResult").style.display =
+        "none";
+
+    document.getElementById("overviewScore").textContent =
+        "--";
+}
+
+// ========================================
+// 8. LEARNING PROGRESS CHART
+// VANILLA JAVASCRIPT - NO LIBRARIES
+// ========================================
+
+function drawChart() {
+
+    const canvas = document.getElementById("progressChart");
+
+    const rect = canvas.getBoundingClientRect();
+
+    if (!rect.width || !rect.height) return;
+
+    const ratio = window.devicePixelRatio || 1;
+
+    canvas.width = rect.width * ratio;
+    canvas.height = rect.height * ratio;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    const width = rect.width;
+    const height = rect.height;
+
+    ctx.clearRect(0, 0, width, height);
+
+    const left = 42;
+    const right = 10;
+    const top = 15;
+    const bottom = 62;
+
+    const chartHeight = height - top - bottom;
+    const chartWidth = width - left - right;
+
+    // Y-axis labels and grid
+
+    ctx.font = "11px Arial";
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#64748b";
+
+    for (let i = 0; i <= 100; i += 25) {
+
+        const y = top + chartHeight -
+            (i / 100) * chartHeight;
+
+        ctx.fillText(i + "%", left - 8, y + 4);
+
+        ctx.beginPath();
+        ctx.strokeStyle = "#e2e8f0";
+        ctx.lineWidth = 1;
+        ctx.moveTo(left, y);
+        ctx.lineTo(width - right, y);
+        ctx.stroke();
+    }
+
+    const barWidth = Math.min(
+        36,
+        chartWidth / (topicNames.length * 1.7)
+    );
+
+    const gap = chartWidth / topicNames.length;
+
+    topicNames.forEach((name, index) => {
+
+        const x = left + index * gap +
+            (gap - barWidth) / 2;
+
+        const completed = topicChecks[index].checked;
+
+        const barHeight = completed
+            ? chartHeight : 0;
+
+        if (completed) {
+
+            ctx.fillStyle = "#16a34a";
+
+            ctx.fillRect(
+                x,
+                top + chartHeight - barHeight,
+                barWidth,
+                barHeight
+            );
+
+        } else {
+
+            ctx.fillStyle = "#cbd5e1";
+
+            ctx.fillRect(
+                x,
+                top + chartHeight - 5,
+                barWidth,
+                5
+            );
+        }
+
+        ctx.save();
+
+        ctx.translate(
+            x + barWidth / 2,
+            height - bottom + 12
+        );
+
+        ctx.rotate(-Math.PI / 4);
+
+        ctx.textAlign = "right";
+        ctx.font = "11px Arial";
+        ctx.fillStyle = "#475569";
+
+        ctx.fillText(name, 0, 0);
+
+        ctx.restore();
+
+    });
+
+}
+
+window.addEventListener("resize", drawChart);
+
+// INITIALIZE DASHBOARD
+
+updateProgress();
+
+</script>
+
+</body>
+</html>
